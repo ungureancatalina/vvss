@@ -1,7 +1,8 @@
 package drinkshop.domain;
 
-public class Product {
+import java.io.Serializable;
 
+public class Product {
     private int id;
     private String nume;
     private double pret;
