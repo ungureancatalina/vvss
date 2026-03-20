@@ -1,13 +1,14 @@
+
 package drinkshop.domain;
 
 public class Stoc {
 
     private int id;
-    private String ingredient;
+    private Ingredient ingredient;
     private double cantitate;
     private double stocMinim;
 
-    public Stoc(int id, String ingredient, int cantitate, int stocMinim) {
+    public Stoc(int id, Ingredient ingredient, double cantitate, double stocMinim) {
         this.id = id;
         this.ingredient = ingredient;
         this.cantitate = cantitate;
@@ -19,7 +20,7 @@ public class Stoc {
         return id;
     }
 
-    public String getIngredient() {
+    public Ingredient getIngredient() {
         return ingredient;
     }
 
@@ -32,7 +33,7 @@ public class Stoc {
     }
 
     // --- setters ---
-    public void setIngredient(String ingredient) {
+    public void setIngredient(Ingredient ingredient) {
         this.ingredient = ingredient;
     }
 

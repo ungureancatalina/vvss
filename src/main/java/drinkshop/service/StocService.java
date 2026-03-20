@@ -1,5 +1,7 @@
+
 package drinkshop.service;
 
+import drinkshop.domain.Ingredient;
 import drinkshop.domain.IngredientReteta;
 import drinkshop.domain.Reteta;
 import drinkshop.domain.Stoc;
@@ -36,11 +38,11 @@ public class StocService {
         List<IngredientReteta> ingredienteNecesare = reteta.getIngrediente();
 
         for (IngredientReteta e : ingredienteNecesare) {
-            String ingredient = e.getDenumire();
+            Ingredient ingredient = e.getIngredient();
             double necesar = e.getCantitate();
 
             double disponibil = stocRepo.findAll().stream()
-                    .filter(s -> s.getIngredient().equalsIgnoreCase(ingredient))
+                    .filter(s -> s.getIngredient().getId() == ingredient.getId())
                     .mapToDouble(Stoc::getCantitate)
                     .sum();
 
@@ -57,11 +59,11 @@ public class StocService {
         }
 
         for (IngredientReteta e : reteta.getIngrediente()) {
-            String ingredient = e.getDenumire();
+            Ingredient ingredient = e.getIngredient();
             double necesar = e.getCantitate();
 
             List<Stoc> ingredienteStoc = stocRepo.findAll().stream()
-                    .filter(s -> s.getIngredient().equalsIgnoreCase(ingredient))
+                    .filter(s -> s.getIngredient().getId() == ingredient.getId())
                     .toList();
 
             double ramas = necesar;

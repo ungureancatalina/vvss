@@ -43,14 +43,14 @@ public class ProductService {
     }
 
     public List<Product> filterByCategorie(CategorieBautura categorie) {
-        if (categorie == CategorieBautura.ALL) return getAllProducts();
+        if (categorie == null || "ALL".equals(categorie.getNume())) return getAllProducts();
         return getAllProducts().stream()
                 .filter(p -> p.getCategorie() == categorie)
                 .collect(Collectors.toList());
     }
 
     public List<Product> filterByTip(TipBautura tip) {
-        if (tip == TipBautura.ALL) return getAllProducts();
+        if (tip == null || "ALL".equals(tip.getNume())) return getAllProducts();
         return getAllProducts().stream()
                 .filter(p -> p.getTip() == tip)
                 .collect(Collectors.toList());

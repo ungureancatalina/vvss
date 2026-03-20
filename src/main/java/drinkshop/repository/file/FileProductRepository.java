@@ -3,11 +3,12 @@ package drinkshop.repository.file;
 import drinkshop.domain.Product;
 import drinkshop.domain.CategorieBautura;
 import drinkshop.domain.TipBautura;
+import drinkshop.repository.RepositoryException;
 
 public class FileProductRepository
         extends FileAbstractRepository<Integer, Product> {
 
-    public FileProductRepository(String fileName) {
+    public FileProductRepository(String fileName) throws RepositoryException {
         super(fileName);
         loadFromFile();
     }
@@ -25,8 +26,8 @@ public class FileProductRepository
         int id = Integer.parseInt(elems[0]);
         String name = elems[1];
         double price = Double.parseDouble(elems[2]);
-        CategorieBautura categorie = CategorieBautura.valueOf(elems[3]);
-        TipBautura tip = TipBautura.valueOf(elems[4]);
+        CategorieBautura categorie = new CategorieBautura(1, elems[3]);
+        TipBautura tip = new TipBautura(1, elems[4]);
 
         return new Product(id, name, price, categorie, tip);
     }

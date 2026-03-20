@@ -1,6 +1,7 @@
 package drinkshop.repository.file;
 
 import drinkshop.repository.AbstractRepository;
+import drinkshop.repository.RepositoryException;
 
 import java.io.*;
 
@@ -9,8 +10,19 @@ public abstract class FileAbstractRepository<ID, E>
 
     protected String fileName;
 
-    public FileAbstractRepository(String fileName) {
+    public FileAbstractRepository(String fileName) throws RepositoryException {
         this.fileName = fileName;
+        File file = new File(fileName);
+        try {
+            if (file.getParentFile() != null) {
+                file.getParentFile().mkdirs();
+            }
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            throw new RepositoryException("Cannot create file " + fileName);
+        }
         //loadFromFile();
     }
 

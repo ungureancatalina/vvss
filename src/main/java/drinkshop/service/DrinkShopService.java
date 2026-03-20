@@ -1,3 +1,4 @@
+
 package drinkshop.service;
 
 import drinkshop.domain.*;
@@ -14,18 +15,21 @@ public class DrinkShopService {
     private final OrderService orderService;
     private final RetetaService retetaService;
     private final StocService stocService;
+    private final IngredientService ingredientService;
     private final DailyReportService report;
 
     public DrinkShopService(
             Repository<Integer, Product> productRepo,
             Repository<Integer, Order> orderRepo,
             Repository<Integer, Reteta> retetaRepo,
-            Repository<Integer, Stoc> stocService
+            Repository<Integer, Stoc> stocRepo,
+            Repository<Integer, Ingredient> ingrRepo
     ) {
         this.productService = new ProductService(productRepo);
         this.orderService = new OrderService(orderRepo, productRepo);
         this.retetaService = new RetetaService(retetaRepo);
-        this.stocService = new StocService(stocService);
+        this.stocService = new StocService(stocRepo);
+        this.ingredientService = new IngredientService(ingrRepo);
         this.report = new DailyReportService(orderRepo);
     }
 
@@ -103,5 +107,25 @@ public class DrinkShopService {
 
     public void deleteReteta(int id) {
         retetaService.deleteReteta(id);
+    }
+
+    // -------------- INGREDIENT ---------------
+
+    public void addIngredientStoc(Ingredient i,double cant) {
+        ingredientService.add(i);
+        int stocId = stocService.getAll().size()+1;
+        stocService.add(new Stoc(stocId,i,cant,1));
+    }
+
+    public void updateIngredient(Ingredient i) {
+        ingredientService.update(i);
+    }
+
+    public void deleteIngredient(int id) {
+        ingredientService.delete(id);
+    }
+
+    public List<Ingredient> getAllIngredients() {
+        return ingredientService.getAll();
     }
 }

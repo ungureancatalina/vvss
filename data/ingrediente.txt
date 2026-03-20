@@ -1,0 +1,12 @@
+1,cafea_macinata
+2,apa
+3,lapte
+4,lapte_ovaz
+5,matcha_pudra
+6,taro_pudra
+7,tapioca
+8,ceai_verde
+9,lamaie
+10,zahar
+11,lime
+12,orange

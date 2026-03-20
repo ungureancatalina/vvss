@@ -1,3 +1,4 @@
+
 package drinkshop.ui;
 
 import drinkshop.domain.*;
@@ -71,21 +72,30 @@ public class DrinkShopController {
         colProdTip.setCellValueFactory(new PropertyValueFactory<>("tip"));
         productTable.setItems(productList);
 
-        comboProdCategorie.getItems().setAll(CategorieBautura.values());
-        comboProdTip.getItems().setAll(TipBautura.values());
+        comboProdCategorie.getItems().setAll(
+                new CategorieBautura(1, "CAFEA"),
+                new CategorieBautura(2, "CEAI"),
+                new CategorieBautura(3, "SUC"),
+                new CategorieBautura(4, "SMOOTHIE")
+        );
+        comboProdTip.getItems().setAll(
+                new TipBautura(1, "BASIC"),
+                new TipBautura(2, "WATER_BASED"),
+                new TipBautura(3, "ALCOHOLIC")
+        );
 
         // RETETE
         colRetetaId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colRetetaDesc.setCellValueFactory(data -> {
             Reteta r = data.getValue();
             String desc = r.getIngrediente().stream()
-                    .map(i -> i.getDenumire() + " (" + i.getCantitate() + ")")
+                    .map(i -> i.getIngredient() + " (" + i.getCantitate() + ")")
                     .collect(Collectors.joining(", "));
             return new SimpleStringProperty(desc);
         });
         retetaTable.setItems(retetaList);
 
-        colNewIngredName.setCellValueFactory(new PropertyValueFactory<>("denumire"));
+        colNewIngredName.setCellValueFactory(new PropertyValueFactory<>("ingredient"));
         colNewIngredCant.setCellValueFactory(new PropertyValueFactory<>("cantitate"));
         newRetetaTable.setItems(newRetetaList);
 
@@ -167,8 +177,10 @@ public class DrinkShopController {
     // ---------- RETETA NOUA ----------
     @FXML
     private void onAddNewIngred() {
-        newRetetaList.add(new IngredientReteta(txtNewIngredName.getText(),
-                Double.parseDouble(txtNewIngredCant.getText())));
+        Ingredient i = new Ingredient(service.getAllIngredients().size()+1,txtNewIngredName.getText());
+        double cant = Double.parseDouble(txtNewIngredCant.getText());
+        service.addIngredientStoc(i,cant);
+        newRetetaList.add(new IngredientReteta(i, cant));
     }
 
     @FXML

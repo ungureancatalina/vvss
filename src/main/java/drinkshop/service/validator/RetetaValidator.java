@@ -1,3 +1,4 @@
+
 package drinkshop.service.validator;
 
 import drinkshop.domain.IngredientReteta;
@@ -23,7 +24,7 @@ public class RetetaValidator implements Validator<Reteta> {
         ingrediente.stream()
                 .filter(entry -> entry.getCantitate() <= 0)
                 .forEach(entry -> {
-                    errors.accumulateAndGet("[" + entry.getDenumire() + "]"+ "cantitate negativa sau zero", String::concat);
+                    errors.accumulateAndGet("[" + entry.getIngredient() + "]"+ "cantitate negativa sau zero", String::concat);
                 });
 
         if (!errors.get().isEmpty())

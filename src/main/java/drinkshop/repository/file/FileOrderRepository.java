@@ -4,6 +4,7 @@ import drinkshop.domain.Order;
 import drinkshop.domain.OrderItem;
 import drinkshop.domain.Product;
 import drinkshop.repository.Repository;
+import drinkshop.repository.RepositoryException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class FileOrderRepository
 
     private Repository<Integer, Product> productRepository;
 
-    public FileOrderRepository(String fileName, Repository<Integer, Product> productRepository) {
+    public FileOrderRepository(String fileName, Repository<Integer, Product> productRepository) throws RepositoryException {
         super(fileName);
         this.productRepository = productRepository;
         loadFromFile();
