@@ -2,6 +2,7 @@ package drinkshop.service;
 
 import drinkshop.domain.*;
 import drinkshop.repository.Repository;
+import drinkshop.service.validator.ProductValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,9 @@ public class ProductService {
     }
 
     public void addProduct(Product p) {
+        ProductValidator validator = new drinkshop.service.validator.ProductValidator();
+        validator.validate(p);
+
         productRepo.save(p);
     }
 
