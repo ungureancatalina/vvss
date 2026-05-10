@@ -48,7 +48,7 @@ public class StocServiceStep4IntegrationETest {
         stocValidator = new StocValidator();
         ingredientRepoMock = mock(Repository.class);
         stocRepo = new FileStocRepository(testFileName, ingredientRepoMock);
-        stocService = new StocService(stocRepo);
+        stocService = new StocService(stocRepo,stocValidator);
     }
 
     // Curățăm fișierul după fiecare test pentru a preveni interferența între teste

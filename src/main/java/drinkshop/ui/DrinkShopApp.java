@@ -6,6 +6,8 @@ import drinkshop.repository.Repository;
 import drinkshop.repository.RepositoryException;
 import drinkshop.repository.file.*;
 import drinkshop.service.DrinkShopService;
+import drinkshop.service.validator.StocValidator;
+import drinkshop.service.validator.Validator;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -33,8 +35,10 @@ public class DrinkShopApp extends Application {
             throw new RuntimeException(e);
         }
 
+        Validator<Stoc> stocValidator = new StocValidator();
+
         // ---------- Initializare Service ----------
-        DrinkShopService service = new DrinkShopService(productRepo, orderRepo, retetaRepo, stocRepo, ingrRepo);
+        DrinkShopService service = new DrinkShopService(productRepo, orderRepo, retetaRepo, stocRepo, ingrRepo,stocValidator);
 
         // ---------- Incarcare FXML ----------
 

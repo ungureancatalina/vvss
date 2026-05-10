@@ -10,7 +10,7 @@ public abstract class FileAbstractRepository<ID, E>
 
     protected String fileName;
 
-    public FileAbstractRepository(String fileName) throws RepositoryException {
+    public FileAbstractRepository(String fileName) {
         this.fileName = fileName;
         File file = new File(fileName);
         try {
@@ -21,7 +21,7 @@ public abstract class FileAbstractRepository<ID, E>
                 file.createNewFile();
             }
         } catch (IOException e) {
-            throw new RepositoryException("Cannot create file " + fileName);
+            System.out.println("Cannot create file " + fileName);
         }
         //loadFromFile();
     }

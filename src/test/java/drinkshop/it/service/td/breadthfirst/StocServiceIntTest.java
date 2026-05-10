@@ -1,12 +1,16 @@
 package drinkshop.it.service.td.breadthfirst;
 
+import drinkshop.domain.Ingredient;
 import drinkshop.domain.Stoc;
 import drinkshop.repository.Repository;
+import drinkshop.repository.file.FileIngredientRepository;
 import drinkshop.repository.file.FileStocRepository;
 import drinkshop.service.StocService;
 import drinkshop.service.validator.StocValidator;
 import drinkshop.service.validator.ValidationException;
 import org.junit.jupiter.api.*;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -15,13 +19,14 @@ public class StocServiceIntTest {
     private Stoc stoc;
     private StocValidator stocValidator; // REAL
     private Repository<Integer, Stoc> stocRepo;
-
+    private Repository<Integer, Ingredient> ingrRepo;
     private StocService stocService;
 
     @BeforeEach
     void setUp() {
         stocValidator = new StocValidator();
-        stocRepo = new FileStocRepository("data/stocuri.txt");
+        ingrRepo = new FileIngredientRepository("data/ingrediente.txt");
+        stocRepo = new FileStocRepository("data/stocuri.txt", ingrRepo);
         stoc = null; // integram al doilea nivel (top down breadth first)
         stocService = new StocService(stocRepo, stocValidator);
     }
@@ -29,7 +34,7 @@ public class StocServiceIntTest {
     @Test
     @Order(1)
     void testAddValid_withRealRepo() {
-        Stoc stoc = new Stoc(1, "Apa", 5.0, 1.0);
+        Stoc stoc = new Stoc(1, new Ingredient(1001,"Apa"), 5.0, 1.0);
 
         //apelam metoda add si evaluam apelul cu fail
         try{
@@ -45,7 +50,7 @@ public class StocServiceIntTest {
     @Test
     @Order(2)
     void testAddInvalid_withRealRepo() {
-        Stoc stoc = new Stoc(-1, "Apa", 5.0, 10.0);
+        Stoc stoc = new Stoc(-1, new Ingredient(100,"Apa"), 5.0, 10.0);
 
         //apelam metoda si evaluam invalidarea obiectului
         Assertions.assertThrows(ValidationException.class, () -> {

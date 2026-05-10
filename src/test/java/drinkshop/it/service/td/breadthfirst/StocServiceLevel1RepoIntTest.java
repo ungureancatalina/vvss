@@ -1,5 +1,6 @@
 package drinkshop.it.service.td.breadthfirst;
 
+import drinkshop.domain.Ingredient;
 import drinkshop.domain.Stoc;
 import drinkshop.repository.Repository;
 import drinkshop.repository.file.FileStocRepository;
@@ -17,13 +18,14 @@ public class StocServiceLevel1RepoIntTest {
     private Stoc stoc;
     private StocValidator stocValidator;
     private Repository<Integer, Stoc> stocRepo;
-
+private Repository<Integer, Ingredient> ingrRepo;
     private StocService stocService;
 
     @BeforeEach
     void setUp() {
         stocValidator = new StocValidator();//deja integrat
-        stocRepo = new FileStocRepository("data/stocuri.txt"); // integram primul nivel (top down breadth first)
+        ingrRepo = mock(Repository.class);
+        stocRepo = new FileStocRepository("data/stocuri.txt",ingrRepo); // integram primul nivel (top down breadth first)
         stoc = mock(Stoc.class);
         stocService = new StocService(stocRepo, stocValidator);
     }
@@ -34,7 +36,7 @@ public class StocServiceLevel1RepoIntTest {
         //simulam o adaugare valida cu Stoc s = new Stoc(1, "Apa", 5, 1);
         //asociem comportamentul pentru obiectul mock stoc
         when(stoc.getId()).thenReturn(1);
-        when(stoc.getIngredient()).thenReturn("Apa");
+        when(stoc.getIngredient()).thenReturn(new Ingredient(1,"Apa"));
         when(stoc.getCantitate()).thenReturn(5.00);
         when(stoc.getStocMinim()).thenReturn(1.00);
 

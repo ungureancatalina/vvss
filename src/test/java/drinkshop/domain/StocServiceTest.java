@@ -2,6 +2,7 @@ package drinkshop.domain;
 
 import drinkshop.repository.Repository;
 import drinkshop.service.StocService;
+import drinkshop.service.validator.StocValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,13 @@ class StocServiceTest {
 
     private InMemoryStocRepository repo;
     private StocService service;
+    private StocValidator validator;
 
     @BeforeEach
     void setUp() {
         repo = new InMemoryStocRepository();
-        service = new StocService(repo);
+        validator = new StocValidator();
+        service = new StocService(repo,validator);
     }
 
     @Test

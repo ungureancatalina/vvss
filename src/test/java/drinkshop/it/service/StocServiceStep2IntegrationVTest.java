@@ -36,7 +36,7 @@ public class StocServiceStep2IntegrationVTest {
         // E rămâne mock, pentru că nu vrem să depindem de implementarea concretă a clasei Stoc (vom face asta în Step 4)
         mockStoc = mock(Stoc.class);
 
-        stocService = new StocService(stocRepo);
+        stocService = new StocService(stocRepo,stocValidator);
     }
 
     @Test

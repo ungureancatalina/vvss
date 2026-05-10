@@ -1,5 +1,6 @@
 package drinkshop.it.service.td.depthfirst;
 
+import drinkshop.domain.Ingredient;
 import drinkshop.domain.Stoc;
 import drinkshop.repository.Repository;
 import drinkshop.service.StocService;
@@ -29,7 +30,7 @@ public class StocServiceLevel2StocIntTest {
     @Test
     @Order(1)
     void testAddValid_withRealStoc() {
-        Stoc stoc = new Stoc(1, "Apa", 5.0, 1.0);
+        Stoc stoc = new Stoc(1, new Ingredient(1000,"Apa"), 5.0, 1.0);
         //asociem comportamentul pentru obiectele mock
         when(stocRepo.save(stoc)).thenReturn(stoc);
 
@@ -47,7 +48,7 @@ public class StocServiceLevel2StocIntTest {
     @Test
     @Order(2)
     void testAddInvalid_withRealStoc() {
-        Stoc stoc = new Stoc(-1, "Apa", 5, 10);
+        Stoc stoc = new Stoc(-1, new Ingredient(1000,"Apa"), 5, 10);
 
         //asociem comportamente obiectelor mock
         when(stocRepo.save(stoc)).thenReturn(stoc);//nu se va ajunge la apelul metodei save

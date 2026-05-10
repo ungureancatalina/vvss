@@ -33,7 +33,7 @@ public class StocServiceScenario1UnitTest {
         stocRepo = mock(Repository.class);
         stocValidator = mock(Validator.class);
         mockStoc = mock(Stoc.class);
-        stocService = new StocService(stocRepo);
+        stocService = new StocService(stocRepo,stocValidator);
     }
 
     @Test
@@ -47,7 +47,6 @@ public class StocServiceScenario1UnitTest {
         when(stocRepo.save(mockStoc)).thenReturn(mockStoc);
 
         // ACȚIUNE (Act / When)
-        stocValidator.validate(mockStoc);
         stocService.add(mockStoc);
 
         // ASSERT (Assert / Then)

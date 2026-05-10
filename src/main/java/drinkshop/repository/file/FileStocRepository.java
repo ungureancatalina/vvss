@@ -10,7 +10,7 @@ public class FileStocRepository
         extends FileAbstractRepository<Integer, Stoc> {
     private final Repository<Integer, Ingredient> ingredientRepository;
 
-    public FileStocRepository(String fileName, Repository<Integer, Ingredient> ingrRepo) throws RepositoryException {
+    public FileStocRepository(String fileName, Repository<Integer, Ingredient> ingrRepo) {
         super(fileName);
         this.ingredientRepository = ingrRepo;
         loadFromFile();

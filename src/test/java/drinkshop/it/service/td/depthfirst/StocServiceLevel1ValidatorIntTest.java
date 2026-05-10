@@ -1,5 +1,6 @@
 package drinkshop.it.service.td.depthfirst;
 
+import drinkshop.domain.Ingredient;
 import drinkshop.domain.Stoc;
 import drinkshop.repository.Repository;
 import drinkshop.service.StocService;
@@ -33,7 +34,7 @@ public class StocServiceLevel1ValidatorIntTest {
         //simulam o adaugare valida cu Stoc s = new Stoc(1, "Apa", 5.0, 1.0);
         //asociem comportamentul pentru obiectele mock
         when(stoc.getId()).thenReturn(1);
-        when(stoc.getIngredient()).thenReturn("Apa");
+        when(stoc.getIngredient()).thenReturn(new Ingredient(1000,"Apa"));
         when(stoc.getCantitate()).thenReturn(5.00);
         when(stoc.getStocMinim()).thenReturn(1.00);
         when(stocRepo.save(stoc)).thenReturn(stoc);

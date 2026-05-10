@@ -50,7 +50,7 @@ public class StocServiceStep3IntegrationRTest {
         ingredientRepoMock = mock(Repository.class);
         stocRepo = new FileStocRepository(testFileName, ingredientRepoMock);
         mockStoc = mock(Stoc.class);
-        stocService = new StocService(stocRepo);
+        stocService = new StocService(stocRepo,stocValidator);
     }
 
     // Curățăm fișierul după fiecare test pentru a preveni interferența între teste

@@ -10,7 +10,7 @@ import drinkshop.repository.RepositoryException;
 import java.io.File;
 
 public class FileIngredientRepository extends FileAbstractRepository<Integer, Ingredient> {
-    public FileIngredientRepository(String fileName) throws RepositoryException {
+    public FileIngredientRepository(String fileName) {
         super(fileName);
         loadFromFile();
     }

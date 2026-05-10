@@ -1,7 +1,9 @@
 package drinkshop.it.service.td.depthfirst;
 
+import drinkshop.domain.Ingredient;
 import drinkshop.domain.Stoc;
 import drinkshop.repository.Repository;
+import drinkshop.repository.file.FileIngredientRepository;
 import drinkshop.repository.file.FileStocRepository;
 import drinkshop.service.StocService;
 import drinkshop.service.validator.StocValidator;
@@ -15,13 +17,14 @@ public class StocServiceIntTest {
     private Stoc stoc;
     private StocValidator stocValidator; // REAL
     private Repository<Integer, Stoc> stocRepo;
-
+private FileIngredientRepository ingrRepo;
     private StocService stocService;
 
     @BeforeEach
     void setUp() {
         stocValidator = new StocValidator();
-        stocRepo = new FileStocRepository("data/stocuri.txt"); // integram al doilea branch (top down depth first)
+        ingrRepo=new FileIngredientRepository("data/ingrediente.txt");
+        stocRepo = new FileStocRepository("data/stocuri.txt",ingrRepo); // integram al doilea branch (top down depth first)
         stoc = null;
         stocService = new StocService(stocRepo, stocValidator);
     }
@@ -29,7 +32,7 @@ public class StocServiceIntTest {
     @Test
     @Order(1)
     void testAddValid_withRealRepo() {
-        Stoc stoc = new Stoc(1, "Apa", 5.0, 1.0);
+        Stoc stoc = new Stoc(1, new Ingredient(1000,"Apa"), 5.0, 1.0);
 
         //apelam metoda add si evaluam apelul cu fail
         try{
@@ -45,7 +48,7 @@ public class StocServiceIntTest {
     @Test
     @Order(2)
     void testAddInvalid_withRealRepo() {
-        Stoc stoc = new Stoc(-1, "Apa", 5.0, 10.0);
+        Stoc stoc = new Stoc(-1, new Ingredient(1000,"Apa"), 5.0, 10.0);
 
         //apelam metoda si evaluam invalidarea obiectului
         Assertions.assertThrows(ValidationException.class, () -> {
