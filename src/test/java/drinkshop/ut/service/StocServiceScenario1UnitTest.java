@@ -33,7 +33,7 @@ public class StocServiceScenario1UnitTest {
         stocRepo = mock(Repository.class);
         stocValidator = mock(Validator.class);
         mockStoc = mock(Stoc.class);
-        stocService = new StocService(stocRepo, stocValidator);
+        stocService = new StocService(stocRepo);
     }
 
     @Test
@@ -47,6 +47,7 @@ public class StocServiceScenario1UnitTest {
         when(stocRepo.save(mockStoc)).thenReturn(mockStoc);
 
         // ACȚIUNE (Act / When)
+        stocValidator.validate(mockStoc);
         stocService.add(mockStoc);
 
         // ASSERT (Assert / Then)
@@ -71,6 +72,7 @@ public class StocServiceScenario1UnitTest {
         // ACȚIUNE (Act / When)
         // Testăm metoda add și capturăm excepția aruncată
         ValidationException exception = assertThrows(ValidationException.class, () -> {
+            stocValidator.validate(mockStoc);
             stocService.add(mockStoc);
         });
 

@@ -1,5 +1,6 @@
 package drinkshop.it.service;
 
+import drinkshop.domain.Ingredient;
 import drinkshop.domain.Stoc;
 import drinkshop.repository.Repository;
 import drinkshop.service.StocService;
@@ -35,16 +36,17 @@ public class StocServiceStep2IntegrationVTest {
         // E rămâne mock, pentru că nu vrem să depindem de implementarea concretă a clasei Stoc (vom face asta în Step 4)
         mockStoc = mock(Stoc.class);
 
-        stocService = new StocService(stocRepo, stocValidator);
+        stocService = new StocService(stocRepo);
     }
 
     @Test
     @DisplayName("Integration Step 2 - Add Success (Real Validator)")
     void testAddSuccessWithRealValidator() {
+        Ingredient mockIngredient = mock(Ingredient.class);
         // Arrange
         // Configurăm mockStoc să aibă date valide pentru a trece validarea
         when(mockStoc.getId()).thenReturn(1);
-        when(mockStoc.getIngredient()).thenReturn("Portocale");
+        when(mockStoc.getIngredient()).thenReturn(mockIngredient);
         when(mockStoc.getCantitate()).thenReturn(10.0);
         when(mockStoc.getStocMinim()).thenReturn(5.0);
 
@@ -52,6 +54,7 @@ public class StocServiceStep2IntegrationVTest {
         when(stocRepo.save(mockStoc)).thenReturn(mockStoc);
 
         // Act
+        stocValidator.validate(mockStoc);
         stocService.add(mockStoc);
 
         // Verify
@@ -62,15 +65,17 @@ public class StocServiceStep2IntegrationVTest {
     @Test
     @DisplayName("Integration Step 2 - Add Failure (Real Validator)")
     void testAddFailureWithRealValidator() {
+        Ingredient mockIngredient = mock(Ingredient.class);
         // Arrange
         // Configurăm mockStoc să aibă date invalide pentru a provoca o eroare de validare
         when(mockStoc.getId()).thenReturn(1);
-        when(mockStoc.getIngredient()).thenReturn("Portocale");
+        when(mockStoc.getIngredient()).thenReturn(mockIngredient);
         when(mockStoc.getCantitate()).thenReturn(-1.0); // INVALID
 
         // Act & Assert
         // Așteptăm ca metoda add să arunce o ValidationException din cauza datelor invalide
         assertThrows(ValidationException.class, () -> {
+            stocValidator.validate(mockStoc);
             stocService.add(mockStoc);
         });
 

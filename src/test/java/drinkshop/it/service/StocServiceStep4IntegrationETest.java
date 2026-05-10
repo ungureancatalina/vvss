@@ -1,6 +1,9 @@
 package drinkshop.it.service;
 
+import drinkshop.domain.Ingredient;
 import drinkshop.domain.Stoc;
+import drinkshop.repository.Repository;
+import drinkshop.repository.RepositoryException;
 import drinkshop.repository.file.FileStocRepository;
 import drinkshop.service.StocService;
 import drinkshop.service.validator.StocValidator;
@@ -16,6 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Step 4: Integrare E (se testează S + V + R cu E)
@@ -29,10 +34,11 @@ public class StocServiceStep4IntegrationETest {
     private StocService stocService;
     private StocValidator stocValidator;
     private FileStocRepository stocRepo;
+    private Repository<Integer, Ingredient> ingredientRepoMock;
     private final String testFileName = "data/stocuri_it_step4_test.txt";
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws IOException, RepositoryException {
         // Pregătim un fișier gol pentru repository-ul real pentru a asigura un mediu curat pentru fiecare test
         Path path = Paths.get(testFileName);
         Files.createDirectories(path.getParent());
@@ -40,8 +46,9 @@ public class StocServiceStep4IntegrationETest {
 
         // Inițializăm toate obiectele reale pentru a testa integrarea completă
         stocValidator = new StocValidator();
-        stocRepo = new FileStocRepository(testFileName);
-        stocService = new StocService(stocRepo, stocValidator);
+        ingredientRepoMock = mock(Repository.class);
+        stocRepo = new FileStocRepository(testFileName, ingredientRepoMock);
+        stocService = new StocService(stocRepo);
     }
 
     // Curățăm fișierul după fiecare test pentru a preveni interferența între teste
@@ -55,10 +62,15 @@ public class StocServiceStep4IntegrationETest {
     void testAddSuccessFullIntegration() {
         // Arrange
         // Creăm un obiect Stoc real cu date valide pentru a trece validarea și a fi adăugat în repository
-        Stoc realStoc = new Stoc(200, "Mentă", 50.0, 10.0);
+        Ingredient menta = new Ingredient(1, "Mentă");
+        when(ingredientRepoMock.findOne(1)).thenReturn(menta);
+
+        // Creăm un obiect Stoc real, folosind obiectul menta, nu un String
+        Stoc realStoc = new Stoc(200, menta, 50.0, 10.0);
 
         // Act
         // Adăugăm stocul folosind serviciul real, care va valida și salva în repository-ul real
+        stocValidator.validate(realStoc);
         stocService.add(realStoc);
 
         // Assert
@@ -66,7 +78,7 @@ public class StocServiceStep4IntegrationETest {
         assertEquals(1, stocRepo.findAll().size());
         Stoc savedStoc = stocRepo.findOne(200);
         assertNotNull(savedStoc);
-        assertEquals("Mentă", savedStoc.getIngredient());
+        assertEquals(menta, savedStoc.getIngredient());
         assertEquals(50.0, savedStoc.getCantitate());
     }
 
@@ -75,18 +87,20 @@ public class StocServiceStep4IntegrationETest {
     void testAddFailureFullIntegration() {
         // Arrange
         // Creăm un obiect Stoc real cu date invalide pentru a provoca o eroare de validare și a verifica că nu se adaugă în repository
-        Stoc invalidStoc = new Stoc(201, "Miere", 5.0, 10.0);
+        Ingredient miere = new Ingredient(2, "Miere");
+        Stoc invalidStoc = new Stoc(201, miere, 5.0, 10.0);
 
         // Act & Assert
         // Încercăm să adăugăm stocul invalid și verificăm că se aruncă o excepție de validare
         ValidationException ex = assertThrows(ValidationException.class, () -> {
+            stocValidator.validate(invalidStoc);
             stocService.add(invalidStoc);
         });
 
         // Verify
         // Verificăm că mesajul excepției conține informații despre motivul eșecului
         assertTrue(ex.getMessage().contains("Cantitatea este sub stocul minim!"));
-        
+
         // Verificăm că stocul nu a fost adăugat în repository-ul real din cauza validării eșuate
         assertEquals(0, stocRepo.findAll().size());
     }

@@ -1,6 +1,9 @@
 package drinkshop.it.service;
 
+import drinkshop.domain.Ingredient;
 import drinkshop.domain.Stoc;
+import drinkshop.repository.Repository;
+import drinkshop.repository.RepositoryException;
 import drinkshop.repository.file.FileStocRepository;
 import drinkshop.service.StocService;
 import drinkshop.service.validator.StocValidator;
@@ -31,11 +34,12 @@ public class StocServiceStep3IntegrationRTest {
     private StocService stocService;
     private StocValidator stocValidator;
     private FileStocRepository stocRepo;
+    private Repository<Integer, Ingredient> ingredientRepoMock;
     private Stoc mockStoc;
     private final String testFileName = "data/stocuri_it_test.txt";
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws IOException, RepositoryException {
         // Pregătim un fișier gol pentru repository-ul real pentru a asigura un mediu curat pentru fiecare test
         Path path = Paths.get(testFileName);
         Files.createDirectories(path.getParent());
@@ -43,10 +47,10 @@ public class StocServiceStep3IntegrationRTest {
 
         // Inițializăm obiectele reale și mock
         stocValidator = new StocValidator();
-        stocRepo = new FileStocRepository(testFileName);
+        ingredientRepoMock = mock(Repository.class);
+        stocRepo = new FileStocRepository(testFileName, ingredientRepoMock);
         mockStoc = mock(Stoc.class);
-
-        stocService = new StocService(stocRepo, stocValidator);
+        stocService = new StocService(stocRepo);
     }
 
     // Curățăm fișierul după fiecare test pentru a preveni interferența între teste
@@ -58,21 +62,23 @@ public class StocServiceStep3IntegrationRTest {
     @Test
     @DisplayName("Integration Step 3 - Add Success (Real Validator & Repo)")
     void testAddSuccessWithRealRepo() {
+        Ingredient mockIngredient = mock(Ingredient.class);
         // Arrange
         // Configurăm mockStoc să aibă date valide pentru a trece validarea
         when(mockStoc.getId()).thenReturn(100);
-        when(mockStoc.getIngredient()).thenReturn("Lamaie");
+        when(mockStoc.getIngredient()).thenReturn(mockIngredient);
         when(mockStoc.getCantitate()).thenReturn(20.0);
         when(mockStoc.getStocMinim()).thenReturn(10.0);
 
         // Act
         // Adăugăm stocul folosind serviciul, care va valida și apoi va salva în repository-ul real
+        stocValidator.validate(mockStoc);
         stocService.add(mockStoc);
 
         // Assert
         // Verificăm că stocul a fost adăugat în repository-ul real și că datele sunt corecte
         assertEquals(1, stocRepo.findAll().size());
-        assertEquals("Lamaie", stocRepo.findOne(100).getIngredient());
+        assertEquals(mockIngredient, stocRepo.findOne(100).getIngredient());
     }
 
     @Test
@@ -85,6 +91,7 @@ public class StocServiceStep3IntegrationRTest {
         // Act & Assert
         // Așteptăm ca metoda add să arunce o ValidationException din cauza datelor invalide
         assertThrows(ValidationException.class, () -> {
+            stocValidator.validate(mockStoc);
             stocService.add(mockStoc);
         });
 
